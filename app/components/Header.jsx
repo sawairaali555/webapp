@@ -12,7 +12,7 @@ export function Header() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-md shadow-blue-600/25">
-            <Icon path={icons.download} className="h-[18px] w-[18px]" stroke={2.2} />
+            <Icon path={icons.link} className="h-[18px] w-[18px]" stroke={2.2} />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-slate-900">
             {BRAND}
