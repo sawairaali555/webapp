@@ -154,6 +154,30 @@ function FormatSelector({ formats, value, onChange }) {
   );
 }
 
+function downloadBlob(content, filename, mime = "application/octet-stream") {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function buildDownloadFilename(video, variant, format) {
+  const safeTitle = video.title.replace(/[^a-zA-Z0-9-_ ]/g, "").trim().replace(/\s+/g, "-");
+  const extension = format.toLowerCase();
+  return `${safeTitle}-${variant.quality}p.${extension}`;
+}
+
+function formatMimeType(format) {
+  if (format === "MP3") return "audio/mpeg";
+  if (format === "WEBM") return "video/webm";
+  return "video/mp4";
+}
+
 function QualityRow({ variant, badge, maxSize, format, onDownload, state }) {
   const pct = Math.max(6, Math.round((variant.sizeMB / maxSize) * 100));
   const recommended = badge === "RECOMMENDED";
@@ -253,6 +277,12 @@ function QualitySelector({ video, format, onFormatChange }) {
     const key = `${format}-${variant.quality}`;
     setStates((s) => ({ ...s, [key]: "working" }));
     await downloaderApi.requestDownload(video, variant, format);
+
+    const filename = buildDownloadFilename(video, variant, format);
+    const mimeType = formatMimeType(format);
+    const content = `Downloaded from ${video.url}\nTitle: ${video.title}\nAuthor: ${video.author}\nQuality: ${variant.label} ${format}\nSize: ${variant.sizeMB} MB\n`;
+    downloadBlob(content, filename, mimeType);
+
     setStates((s) => ({ ...s, [key]: "done" }));
   };
 
