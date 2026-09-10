@@ -371,19 +371,6 @@ function DownloadResult({ video, onReset }) {
         </button>
       </div>
 
-      {video.previewUrl && (
-        <div className="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-          <video
-            controls
-            playsInline
-            preload="metadata"
-            poster={video.thumbnail?.url}
-            src={video.previewUrl}
-            className="aspect-video w-full bg-slate-900"
-          />
-        </div>
-      )}
-
       <div className="my-5 h-px bg-slate-200" />
       <QualitySelector video={video} format={format} onFormatChange={setFormat} />
     </div>
