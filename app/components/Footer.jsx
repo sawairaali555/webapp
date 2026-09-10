@@ -1,4 +1,8 @@
-import { BRAND, PLATFORMS } from "@/app/lib/constants";
+"use client";
+
+import { useEffect, useState } from "react";
+import { PLATFORMS } from "@/app/lib/constants";
+import { DEFAULT_SITE_SETTINGS, getStoredSiteSettings } from "@/app/lib/siteSettings";
 import { Icon, PlatformGlyph, icons } from "./Icons";
 
 const FOOTER_COLS = [
@@ -23,22 +27,29 @@ const FOOTER_COLS = [
 ];
 
 export function Footer() {
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    setSettings(getStoredSiteSettings());
+  }, []);
+
   const cols = FOOTER_COLS;
+
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="grid gap-10 sm:gap-14 lg:grid-cols-[1.2fr_repeat(2,1fr)]">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-                <Icon path={icons.download} className="h-[18px] w-[18px]" stroke={2.2} />
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-white"
+                style={{ backgroundColor: settings.accentColor }}
+              >
+                <Icon path={icons[settings.logoIcon] ?? icons.link} className="h-[18px] w-[18px]" stroke={2.2} />
               </span>
-              <span className="font-display text-lg font-semibold tracking-tight text-slate-900">{BRAND}</span>
+              <span className="font-display text-lg font-semibold tracking-tight text-slate-900">{settings.brand}</span>
             </div>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-500">
-              A quiet, fast way to save a video at the quality you choose. No account, no
-              pop-ups, no fake buttons.
-            </p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-500">{settings.footerBlurb}</p>
             <div className="mt-4 flex items-center gap-3">
               {Object.entries(PLATFORMS).map(([key, p]) => (
                 <span key={key} className="text-slate-500 transition hover:text-slate-900" style={{ color: undefined }} title={p.name}>
@@ -65,10 +76,8 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-slate-500">© 2026 {BRAND}. All rights reserved.</p>
-          <p className="text-xs text-slate-500">
-            Not affiliated with YouTube, TikTok, Instagram or Facebook.
-          </p>
+          <p className="text-xs text-slate-500">© 2026 {settings.brand}. All rights reserved.</p>
+          <p className="text-xs text-slate-500">{settings.footerNotice}</p>
         </div>
       </div>
     </footer>

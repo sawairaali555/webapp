@@ -1,21 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BRAND, NAV } from "@/app/lib/constants";
+import { NAV } from "@/app/lib/constants";
+import { DEFAULT_SITE_SETTINGS, getStoredSiteSettings } from "@/app/lib/siteSettings";
 import { Icon, icons } from "./Icons";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    setSettings(getStoredSiteSettings());
+  }, []);
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur-md">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-md shadow-blue-600/25">
-            <Icon path={icons.link} className="h-[18px] w-[18px]" stroke={2.2} />
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-white shadow-md"
+            style={{ backgroundColor: settings.accentColor, boxShadow: `0 8px 20px ${settings.accentColor}33` }}
+          >
+            <Icon path={icons[settings.logoIcon] ?? icons.link} className="h-[18px] w-[18px]" stroke={2.2} />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-slate-900">
-            {BRAND}
+            {settings.brand}
           </span>
         </Link>
 
@@ -26,6 +36,9 @@ export function Header() {
               {n.label}
             </Link>
           ))}
+          <Link href="/admin" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+            Admin
+          </Link>
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
@@ -46,7 +59,7 @@ export function Header() {
       {open && (
         <div className="border-t border-slate-200 bg-white lg:hidden">
           <nav className="mx-auto grid w-full max-w-6xl gap-1 px-5 py-3 sm:px-8">
-            {[{ label: "Home", href: "/" }, ...NAV, { label: "How it works", href: "#how" }, { label: "FAQ", href: "#faq" }].map((n) => (
+            {[{ label: "Home", href: "/" }, ...NAV, { label: "Admin", href: "/admin" }, { label: "How it works", href: "#how" }, { label: "FAQ", href: "#faq" }].map((n) => (
               <Link
                 key={n.href + n.label}
                 href={n.href}

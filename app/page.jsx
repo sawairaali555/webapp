@@ -1,23 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Header } from "@/app/components/Header";
 import { Footer } from "@/app/components/Footer";
 import { Downloader } from "@/app/components/Downloader";
-import { BRAND, PLATFORMS } from "@/app/lib/constants";
-import { Icon, PlatformGlyph, icons } from "@/app/components/Icons";
+import { PLATFORMS } from "@/app/lib/constants";
+import { DEFAULT_SITE_SETTINGS, getStoredSiteSettings } from "@/app/lib/siteSettings";
+import { PlatformGlyph } from "@/app/components/Icons";
 
-function Hero() {
+function Hero({ settings }) {
   return (
     <div className="border-b border-slate-200 bg-white">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-            Download videos from YouTube, TikTok, Instagram & Facebook
+            {settings.homepageTitle}
           </h1>
 
           <p className="mx-auto mt-4 max-w-md text-base text-slate-600 sm:text-lg">
-            Paste a link and choose your quality. No sign-up required.
+            {settings.homepageSubtitle}
           </p>
         </div>
 
@@ -59,6 +61,12 @@ function PlatformCards() {
 }
 
 export default function Home() {
+  const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
+
+  useEffect(() => {
+    setSettings(getStoredSiteSettings());
+  }, []);
+
   return (
     <div id="top" className="min-h-screen bg-white font-body text-slate-900 antialiased">
       <style
@@ -78,7 +86,7 @@ export default function Home() {
       />
       <Header />
       <main>
-        <Hero />
+        <Hero settings={settings} />
         <PlatformCards />
       </main>
       <Footer />
