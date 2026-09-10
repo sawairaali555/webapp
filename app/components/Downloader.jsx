@@ -377,6 +377,7 @@ function DownloadResult({ video, onReset }) {
             controls
             playsInline
             preload="metadata"
+            poster={video.thumbnail?.url}
             src={video.previewUrl}
             className="aspect-video w-full bg-slate-900"
           />
