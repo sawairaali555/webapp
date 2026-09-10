@@ -347,20 +347,9 @@ function DownloadResult({ video, onReset }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/[0.06] sm:p-6">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div
-            className="aspect-video w-36 flex-shrink-0 overflow-hidden rounded-xl"
-            style={{
-              background: video.thumbnail && video.thumbnail.url
-                ? `url(${video.thumbnail.url}) center/cover no-repeat`
-                : `linear-gradient(135deg, ${video.thumbnail?.from || '#e2e8f0'}, ${video.thumbnail?.to || '#c7d2fe'})`,
-            }}
-            aria-hidden="true"
-          />
-          <div className="flex flex-col gap-3">
-            <div className="font-semibold text-slate-900">{video.title}</div>
-            <div className="text-sm text-slate-500">{video.author}</div>
-          </div>
+        <div className="flex flex-col gap-3">
+          <div className="font-semibold text-slate-900">{video.title}</div>
+          <div className="text-sm text-slate-500">{video.author}</div>
         </div>
         <button
           onClick={onReset}
