@@ -60,6 +60,87 @@ function PlatformCards() {
   );
 }
 
+function FeatureGrid({ features }) {
+  return (
+    <section className="bg-slate-50 py-16 sm:py-20">
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-600">Why it feels easy</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            Everything you need, in one place
+          </h2>
+        </div>
+
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+          {features.map((feature, index) => (
+            <div key={`${feature.title}-${index}`} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div
+                className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl text-white"
+                style={{ backgroundColor: "#2563eb" }}
+              >
+                <span className="text-lg">{feature.icon === "download" ? "↓" : feature.icon === "sparkle" ? "✦" : feature.icon === "lock" ? "🔒" : feature.icon === "bolt" ? "⚡" : "→"}</span>
+              </div>
+              <h3 className="font-display text-xl font-semibold text-slate-900">{feature.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{feature.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks({ steps }) {
+  return (
+    <section id="how" className="scroll-mt-24 bg-white py-16 sm:py-20">
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-600">How it works</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            Three quick steps to your file
+          </h2>
+        </div>
+
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+          {steps.map((step, index) => (
+            <div key={`${step.title}-${index}`} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-700">
+                {String(index + 1).padStart(2, "0")}
+              </div>
+              <h3 className="font-display text-xl font-semibold text-slate-900">{step.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQSection({ faqs }) {
+  return (
+    <section id="faq" className="scroll-mt-24 bg-slate-50 py-16 sm:py-20">
+      <div className="mx-auto w-full max-w-5xl px-5 sm:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-600">FAQ</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            Common questions
+          </h2>
+        </div>
+
+        <div className="mt-12 space-y-4">
+          {faqs.map((item, index) => (
+            <div key={`${item.q}-${index}`} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <h3 className="font-display text-lg font-semibold text-slate-900">{item.q}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const [settings, setSettings] = useState(DEFAULT_SITE_SETTINGS);
 
@@ -88,6 +169,9 @@ export default function Home() {
       <main>
         <Hero settings={settings} />
         <PlatformCards />
+        <FeatureGrid features={settings.features ?? []} />
+        <HowItWorks steps={settings.steps ?? []} />
+        <FAQSection faqs={settings.faqs ?? []} />
       </main>
       <Footer />
     </div>

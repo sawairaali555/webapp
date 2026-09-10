@@ -1,3 +1,5 @@
+import { FAQS, FEATURES, STEPS } from "@/app/lib/constants";
+
 export const SITE_SETTINGS_KEY = "grabline-site-settings";
 export const ADMIN_SESSION_KEY = "grabline-admin-session";
 
@@ -10,6 +12,9 @@ export const DEFAULT_SITE_SETTINGS = {
   footerBlurb:
     "A quiet, fast way to save a video at the quality you choose. No account, no pop-ups, no fake buttons.",
   footerNotice: "Not affiliated with YouTube, TikTok, Instagram or Facebook.",
+  features: FEATURES,
+  steps: STEPS,
+  faqs: FAQS,
 };
 
 export const ADMIN_CREDENTIALS = {
@@ -29,6 +34,9 @@ export function mergeSiteSettings(overrides = {}) {
   return {
     ...DEFAULT_SITE_SETTINGS,
     ...overrides,
+    features: overrides.features ?? DEFAULT_SITE_SETTINGS.features,
+    steps: overrides.steps ?? DEFAULT_SITE_SETTINGS.steps,
+    faqs: overrides.faqs ?? DEFAULT_SITE_SETTINGS.faqs,
   };
 }
 
