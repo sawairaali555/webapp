@@ -155,7 +155,7 @@ function FormatSelector({ formats, value, onChange }) {
 }
 
 function downloadBlob(content, filename, mime = "application/octet-stream") {
-  const blob = new Blob([content], { type: mime });
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mime });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -276,14 +276,37 @@ function QualitySelector({ video, format, onFormatChange }) {
   const run = async (variant) => {
     const key = `${format}-${variant.quality}`;
     setStates((s) => ({ ...s, [key]: "working" }));
-    await downloaderApi.requestDownload(video, variant, format);
+    try {
+      const res = await downloaderApi.requestDownload(video, variant, format);
+      if (!res || !res.ok) throw new Error("Download failed");
 
-    const filename = buildDownloadFilename(video, variant, format);
-    const mimeType = formatMimeType(format);
-    const content = `Downloaded from ${video.url}\nTitle: ${video.title}\nAuthor: ${video.author}\nQuality: ${variant.label} ${format}\nSize: ${variant.sizeMB} MB\n`;
-    downloadBlob(content, filename, mimeType);
+      let fileBlob = null;
+      // If the API returned a direct URL, fetch it as binary
+      if (res.url) {
+        const resp = await fetch(res.url);
+        if (!resp.ok) throw new Error("Failed to fetch file");
+        fileBlob = await resp.blob();
+      } else if (res.data) {
+        fileBlob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: formatMimeType(format) });
+      }
 
-    setStates((s) => ({ ...s, [key]: "done" }));
+      const filename = buildDownloadFilename(video, variant, format);
+      const mimeType = formatMimeType(format);
+
+      if (fileBlob) {
+        downloadBlob(fileBlob, filename, mimeType);
+      } else {
+        // Fallback to a small metadata file if no binary available
+        const content = `Downloaded from ${video.url}\nTitle: ${video.title}\nAuthor: ${video.author}\nQuality: ${variant.label} ${format}\nSize: ${variant.sizeMB} MB\n`;
+        downloadBlob(content, filename, mimeType);
+      }
+
+      setStates((s) => ({ ...s, [key]: "done" }));
+    } catch (err) {
+      console.error("Download error:", err);
+      setStates((s) => ({ ...s, [key]: undefined }));
+      alert(err.message || "Download failed");
+    }
   };
 
   return (
@@ -324,9 +347,20 @@ function DownloadResult({ video, onReset }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/[0.06] sm:p-6">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-3">
-          <div className="font-semibold text-slate-900">{video.title}</div>
-          <div className="text-sm text-slate-500">{video.author}</div>
+        <div className="flex items-center gap-4">
+          <div
+            className="aspect-video w-36 flex-shrink-0 overflow-hidden rounded-xl"
+            style={{
+              background: video.thumbnail && video.thumbnail.url
+                ? `url(${video.thumbnail.url}) center/cover no-repeat`
+                : `linear-gradient(135deg, ${video.thumbnail?.from || '#e2e8f0'}, ${video.thumbnail?.to || '#c7d2fe'})`,
+            }}
+            aria-hidden="true"
+          />
+          <div className="flex flex-col gap-3">
+            <div className="font-semibold text-slate-900">{video.title}</div>
+            <div className="text-sm text-slate-500">{video.author}</div>
+          </div>
         </div>
         <button
           onClick={onReset}

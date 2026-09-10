@@ -113,8 +113,24 @@ export const downloaderApi = {
   },
 
   requestDownload(video, variant, format) {
+    // In the real app this would call your backend which proxies the
+    // actual platform video file (no-watermark source). For the demo
+    // / mock environment return a small public sample MP4 URL so the
+    // client can fetch real bytes and save a playable file.
     return new Promise((resolve) => {
-      setTimeout(() => resolve({ ok: true, video, variant, format }), 1400);
+      setTimeout(() =>
+        resolve({
+          ok: true,
+          video,
+          variant,
+          format,
+          // Small public sample file suitable for testing download/playback.
+          // The client fetches it through the server-side proxy to avoid CORS issues.
+          url: `/api/proxy?url=${encodeURIComponent(
+            "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+          )}`,
+        }),
+      1400);
     });
   },
 };
