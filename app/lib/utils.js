@@ -93,6 +93,10 @@ export const downloaderApi = {
             : 140 + (seed % 900);
         const { video, audio } = buildVariants(platform, seed, durationSeconds);
 
+        const previewUrl = `/api/proxy?url=${encodeURIComponent(
+          "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+        )}`;
+
         resolve({
           id: String(seed),
           url,
@@ -100,6 +104,7 @@ export const downloaderApi = {
           title,
           author,
           durationSeconds,
+          previewUrl,
           thumbnail: {
             from: ["#1e293b", "#0f172a", "#1e3a8a", "#312e81"][seed % 4],
             to: ["#334155", "#1e293b", "#2563eb", "#4f46e5"][(seed + 1) % 4],
